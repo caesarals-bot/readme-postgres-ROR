@@ -1,0 +1,60 @@
+1 rails new devise_blog
+2 rails db:create 
+3 gem install devise -v 4.2.0
+4 bundle add devise
+5 rails generate devise:install
+6 rails generate devise User
+7 rails db:migrate
+8 rails g devise:views  (para ver las vistas)
+9 **agregar bootstrap como gema al proyecto
+gem install bootstrap
+gem install jquery-rails
+gem install popper_js
+
+** agregamos la gema al Gemfile y ejecuta un bundle install
+bundle add bootstrap
+bundle add jquery-rails o gem 'jquery-rails'
+bundle add bundle_js
+
+**cambiar el nombre application.css a application.scss
+
+** agregar en application.scss la linea
+@import "bootstrap";
+
+** agregar a application.js 
+https://rubydoc.info/gems/bootstrap
+https://rubygems.org/gems/devise/versions/4.2.0?locale=es
+//= require jquery3
+//= require popper
+//= require bootstrap**agregar bootstrap como gema al proyecto
+import "popper"
+import "bootstrap"
+        
+** agregamos la gema al Gemfile y ejecuta un bundle install
+bundle add bootstrap
+bundle add jquery-rails o gem 'jquery-rails'
+
+**cambiar el nombre application.css a application.scss
+
+** agregar en application.scss la linea
+@import "bootstrap";
+
+config/initializers/assets
+**agregar Rails.application.config.assets.precompile += %w(application.scss bootstrap.min.js popper.js)
+** agregar a application.js 
+//= require jquery3 
+//= require popper
+//= require bootstrap
+
+10 rails g controller home index
+cofiguramos la ruta para iniciar en el home
+11 Descomentar para agregar inicio de  seccion
+#config/initializers/devise.rb linea 266
+
+config.navigational_formats = ['*/*', :html,
+:turbo_stream]
+
+11 creamos un modelo para los post
+rails g scaffold Post image title description:text
+12 creamos la migration 
+rails g migration AddUsersToPosts user:references 

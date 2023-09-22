@@ -1,0 +1,4 @@
+rails db:create
+rails g scaffold farmer name age:int
+
+rails g scaffold animal name Farmer:references

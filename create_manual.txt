@@ -1,0 +1,29 @@
+
+rails new name_proye -d postgres
+
+rails db:create
+
+gem 'devise'
+
+bundle add devise
+
+rails generate devise:install
+
+rails generate devise user
+
+rails g devise:views
+
+rails g migration AddDetailsToUsers photo name
+
+rails db:migrate
+
+rails g model Country name
+
+rails g scaffold articles title description when_went:datetime
+country:references
+
+rails destroy scaffold articles para destruir un scafold
+
+rails g model comment content article:references user:references
+
+rails g model reaction article:references user:references kind reaction_type comment:references

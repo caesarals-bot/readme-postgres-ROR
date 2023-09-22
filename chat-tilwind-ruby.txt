@@ -1,0 +1,36 @@
+1- rails new
+2- bundle add tailwindcss-rails
+3- rails tailwindcss:install
+
+rails assets:precompile
+rails db:create
+rails g controller home index
+4- bundle add devise
+5- rails generate devise:install
+6- rails generate devise user
+7- rails db:migrate
+8- rails g devise:views
+eliminamos el controlladorde prueba home
+9- rails d scaffold home
+
+creamos scaffold de rooms
+10- rails g scaffold Room name
+11- creamos la carpeta shared para las vistas compartidas
+12- creamos el sidebar dentro de shared
+
+<div id="rooms">
+    <% @rooms.each do |room| %>
+      <%= render room %>
+      <p>
+        <%= link_to "Show this room", room %>
+      </p>
+    <% end %>
+</div>
+
+13- utilizamos turbo_frame para renderizar en la misma pagina
+<%= turbo_frame_tag "rooms_controller" do %>
+
+turbo_stream
+
+14- rails g model UserRoom user:references room:references
+15- rails db:migrate

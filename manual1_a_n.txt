@@ -1,0 +1,87 @@
+1-rails new bookshop -d postgresql
+2-bundle
+3-rails db:create
+4-rails g scaffold editorial name
+5-rails g scaffold author name age
+6-rails g scaffold book name editorial:references author:references
+
+*** Agregamos las referencias en los modelos *****
+
+class Author < ApplicationRecord
+    has_many :books
+end
+
+class Editorial < ApplicationRecord
+    has_many :books
+end
+
+7- rails db:migrate
+
+8- para este proyecto utilizamos faker. bundle add faker 
+    require 'faker ' en seed
+    10.times do |i|
+        Author.create(name: Faker::Name, age: 30)
+    end
+
+    10.times do |i|
+        Editorial.create(name: Faker::Book.publisher)
+    end
+
+9- rails db:seed
+
+se crea un metodo auxiliar en el controllador books para evitar repetir codigo 
+before_action :set_author
+def set_author
+    @author = Author.find(params[:author_id]) 
+end
+
+buscando poder inyectar informacion desde otra pagina modificamos el controllador books
+def index
+    @author = Author.find(params[:author_id])
+    @books = @author.books
+    # @books = Book.all
+  end
+
+modificacmos el create
+# POST /books or /books.json
+  def create
+    @book = Book.new(book_params)
+
+    respond_to do |format|
+      if @book.save
+        # format.html { redirect_to book_url(@book), notice: "Book was successfully created." }
+        format.html { redirect_to author_books_path(@autor.id, @book.id), notice: "Book was successfully created." }
+        format.json { render :show, status: :created, location: @book }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @book.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  modificamos el update
+  def update
+    respond_to do |format|
+      if @book.update(book_params)
+        # format.html { redirect_to book_url(@book), notice: "Book was successfully updated." }
+        format.html { redirect_to author_books_path(@autor.id, @book.id), notice: "Book was successfully created." }
+        format.json { render :show, status: :ok, location: @book }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @book.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+modificamos el destroy
+def destroy
+    @book.destroy
+
+    respond_to do |format|
+      # format.html { redirect_to books_url, notice: "Book was successfully destroyed." }
+      format.html { redirect_to author_books_path(@autor.id), notice: "Book was successfully destroyed." }
+      format.json { head :no_content }
+    end
+  end
+
+  
+  <td><%= client.movies.last %></td>

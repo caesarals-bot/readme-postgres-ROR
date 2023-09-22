@@ -1,0 +1,31 @@
+agregamos al controllador  
+  # GET /sellers/new
+  def new #agregamos en la vista new si lo queremos en la index se agregan
+    @seller = Seller.new
+    @managers = Manager.all #agregamos estos datos para obtener los managers
+    @offices = Office.all
+  end
+le agregamos a los parametros los datos a insertar
+
+# Only allow a list of trusted parameters through.
+    def seller_params
+      params.require(:seller).permit(:name, :email, :manager_id, :office_id) #ponemos los datos disponibles en el formulario para insertarlos 
+    end
+
+  agregamos al form delseller para odtener las oficinas y los vendedores
+  <div>
+    <select name="seller[office_id]" id="seller_office_id">
+      <option value="-1" selected >Seleccione una oficina</option>
+        <% @offices.each do |office| %>
+          <option value="<%= office.id %>"> <%= office.id %> - <%= office.name %> </option>
+        <% end %>
+    </select>
+  </div>
+  <div>
+    <select name="seller[manager_id]" id="seller_manager_id">
+      <option value="-1" selected >Seleccione un vendedor</option>
+        <% @managers.each do |manager| %>
+          <option value="<%= manager.id %>"> <%= manager.id %> - <%= manager.name %> </option>
+        <% end %>
+    </select>
+  </div>

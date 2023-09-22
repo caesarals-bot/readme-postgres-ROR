@@ -1,0 +1,48 @@
+1- rails g migration AddRoleToUsers role:integer
+#nos crea una migracion y le agregamos default: 0
+#por si yya hay otros usuarios creados 
+2- class AddRoleToUsers < ActiveRecord::Migration[7.0]
+  def change
+    add_column :users, :role, :integer, default: 0
+  end
+end
+3- ejecutamos la migracion
+4- agregamos al modelo user enum :role, [:normal, :admin]
+para poder definir los roles de usuario
+
+class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+        :recoverable, :rememberable, :validatable
+
+  enum :role, [:normal, :admin]
+end
+
+5- generamos una vista para el user logueado home index si no esta creada
+6- vamos a controllador y agregamos
+before_action :authenticate_user!
+class SellersController < ApplicationController
+  before_action :set_seller, only: %i[ show edit update destroy ]
+  before_action only: [ :show, :new, :create ] do
+    authorize_request(["admin", "normal"])
+  end
+  before_action only: [ :edit, :update :destroy ] do
+    authorize_request(["admin"])
+  end
+
+7- agregamos application_controller authorize_request
+
+class ApplicationController < ActionController::Base
+    include Pagy::Backend
+    Pagy::DEFAULT[:items] = 10        # items per page
+
+    def authorize_request(kind = nill)
+        unless kind.include?(current_user.role)
+            redirect_to post_path, notice: "You arenot authorized to perfom this action"
+        end
+    end
+end
+
+#asignarle admin a un usuario 
+update users set role=1 where id=1

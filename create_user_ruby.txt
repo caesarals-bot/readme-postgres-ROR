@@ -1,0 +1,29 @@
+rails g migration create_users
+
+
+validaciones
+/\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+class Users > ApplicaionRecord
+    validates :username, presence:true, uniqueness: {case_sensitive: false}, length: {minimun: 3, maximum: 25}
+    validates :email, presence:true, uniqueness: true length: { maximum: 105}
+end
+
+crear la relacion con article uno a muchos
+creamos la migracion para adicionar user?id a articulo
+
+rails generate migration add_user_id_to_articles
+
+en la migracion agregamos que vamos hacer, la tabla , y nombre de la columna y el tipo de dato
+add_colunm :articles, :user_id, int
+
+se ejecuta la migracion 
+rails db:migrate
+
+en modelos/user agregamos
+
+has_many :articles
+
+en modelos/article agregamos
+
+belongs_to :user
+quedando la asociacion formada en la capa modelos

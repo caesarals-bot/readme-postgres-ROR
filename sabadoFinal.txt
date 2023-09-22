@@ -1,0 +1,66 @@
+1-new crm_gestion -d postgresql
+2-bundle
+3- rails db:create
+4-rails db:migrate
+4 gem install devise -v 4.2.0
+5 bundle add devise
+6 rails generate devise:install
+7 rails generate devise User
+8 rails db:migrate
+9 rails g devise:views  (para ver las vistas)
+10 rails generate devise:controllers users
+install figaro
+11 bundle add figaro
+12 bundle exec figaro install
+13 bundle add faker
+14 bundle add pagy
+ https://github.com/ddnexus/pagy
+    # Include it in the controllers (e.g. application_controller.rb)
+    include Pagy::Backend
+    agregamos de acuantas paginas vamos a ver
+    Pagy::DEFAULT[:items] = 10        # items per page
+
+    # Include it in the helpers (e.g. application_helper.rb)
+    include Pagy::Frontend
+
+    # Wrap your collections with pagy in your actions
+    @pagy, @records = pagy(Product.all)
+
+    # add linea en la busqueda en el controllador
+    # Wrap your collections with pagy in your actions
+    @pagy, @records = pagy(Product.all)
+    # add en el html a paginar
+    <%# Render a view helper in your views (skipping nav links for empty pages) %>
+    <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+15 bundle add pg_search
+    https://github.com/Casecommons/pg_search
+    add para los modelos donde se efectua la busqueda
+    class Shape < ActiveRecord::Base
+        include PgSearch::Model
+    end
+    # add dentro del modelo para hacer la busqueda
+    pg_search_scope :search_full_text, against: {
+        title: 'A',
+        subtitle: 'B',
+        content: 'C'
+    }
+16 bundle add activestorage
+17 rails active_storage:install
+18 rails db:migrate
+    # add al modelo la siguiente linea
+    # has_one_attached :avatar
+    o utilizamos
+    #class Message < ApplicationRecord
+        has_many_attached :images
+     end
+
+    add al html en el form 
+    con multipl true utilizamos has_many
+     <%= form.file_field :images, multiple: true %><br>
+
+**creando la logica de negocio
+19 rails g scaffold seller name email
+20 rails g model manager name  #el comando model genera una migracion y modelo
+21 rails g migration AddColumnsToSellers Manager:references Office:references
+#las migraciones debende estar ejecutadas para que se ejecute todo
+22 rails db:migrate

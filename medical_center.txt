@@ -1,0 +1,17 @@
+1- rails new medical_center -d postgresql
+2- rails db:create
+3- rails g scaffold patient name age:integer
+4- rails g scaffold treatment name description:text date:date
+5- rails g scaffold treatment name description:text date:date
+6- rails g migration add_patient_to_treatments patient:references
+7- rails db:migration
+bootstrap
+a- gem install bootstrap
+b- gem 'jquery-rails'
+c- $ mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss
+    o cambiarle el nombre manual a aplication.scss
+d- agregar a aplication.js
+    //= require jquery3
+    //= require popper
+    //= require bootstrap
+

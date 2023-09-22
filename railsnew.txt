@@ -1,0 +1,16 @@
+rails new therialnews -d postgresql
+2-bundle
+3- rails db:create
+4-rails db:migrate
+4 gem install devise -v 4.2.0
+5 bundle add devise
+6 rails generate devise:install
+7 rails generate devise User
+8 rails db:migrate
+9 rails g devise:views  (para ver las vistas)
+10 rails generate devise:controllers users
+11 rails g controller welcome index
+12 agregamos bootstrap  
+13 rails g scaffold publication title content
+14 rails generate model comment content:text
+15 add navbar a la carpeta shared

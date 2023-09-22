@@ -1,0 +1,50 @@
+#controllador
+def index
+    @sellers = Seller.all
+    @office_id = params[:office_id]
+    @manager_id = params[:manager_id]
+
+    if @office_id.present? && @office_id.to_i > 0
+      #@sellers = @sellers.search_full_text(@office_id)
+      @sellers = @sellers.where(office_id: @office_id)
+    end
+    if @manager_id.present? && @manager_id.to_i > 0
+      #@sellers = @sellers.search_full_text(@manager_id)
+      @sellers = @sellers.where(manager_id: @manager_id)
+    end
+    @managers = Manager.all
+    @offices = Office.all
+  end
+
+#en la vista index
+<form action="/sellers" method="get">
+  <div>
+      <select class="form-select mt-2" name="office_id" id="office_id">
+        <option value="-1" selected >Seleccione una oficina</option>
+          <% @offices.each do |office| %>
+            <option value="<%= office.id %>"> <%= office.id %> - <%= office.name %> </option>
+          <% end %>
+      </select>
+    </div>
+    <div>
+      <select class="form-select mt-2" name="manager_id" id="manager_id">
+        <option value="-1" selected >Seleccione un manager</option>
+          <% @managers.each do |manager| %>
+            <option value="<%= manager.id %>"> <%= manager.id %> - <%= manager.name %> </option>
+          <% end %>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary mb-3 float-end mt-3" value="Buscar">Buscar</button>
+</form>
+
+#en el modelo no es necesario ya que se utiliza con un input el anterior es un select
+class Seller < ApplicationRecord
+    belongs_to :manager
+    belongs_to :office
+
+    include PgSearch::Model
+    pg_search_scope :search_full_text, against: {
+        office_id: 'A',
+        manager_id: 'B'
+    }
+end

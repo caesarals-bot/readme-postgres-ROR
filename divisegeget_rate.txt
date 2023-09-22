@@ -1,0 +1,8 @@
+rails new blog_devise -d postgresql
+rails db:create 
+gem install devise -v 4.2.0
+bundle add devise
+rails generate devise:install
+rails generate devise User
+rails db:migrate
+rails g devise:views  (para ver las vistas)

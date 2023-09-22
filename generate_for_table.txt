@@ -1,0 +1,200 @@
+--creamos la migracion y la nombramos
+rails generate migration create_movies
+
+--vamos a la migracion creada y agregamos los capos requeridos name, synopsis y director
+
+class CreateMovies < ActiveRecord::Migration[7.0]
+  def change
+    create_table :movies do |t|
+      t.string :name
+      t.text :synopsis
+      t.string :director
+      t.timestamps
+    end
+  end
+end
+
+-->Ejecutamos la migracion
+
+rails db:migrate
+
+== 20230528141943 CreateMovies: migrating =====================================
+-- create_table(:movies)
+   -> 0.0145s
+== 20230528141943 CreateMovies: migrated (0.0148s) ============================
+
+-- el schema.rb queda asi 
+
+ActiveRecord::Schema[7.0].define(version: 2023_05_28_141943) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "movies", force: :cascade do |t|
+    t.string "name"
+    t.text "synopsis"
+    t.string "director"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+end
+
+-- creamos las migraciones para series y documentaryfilm
+rails generate migration create_DocumentryFilm
+rails generate migration create_serie
+
+rails generate migration add_name_synopsis_director_to_documentry
+
+class AddNameSynopsisDirectorToDocumentry < ActiveRecord::Migration[7.0]
+  def change
+    add_column :documentry_films, :name, :string
+    add_column :documentry_films, :synopsis, :text
+    add_column :documentry_films, :director, :string
+  end
+end
+
+-- add_column(:documentry_films, :name, :string)
+   -> 0.0067s
+-- add_column(:documentry_films, :synopsis, :text)
+   -> 0.0011s
+-- add_column(:documentry_films, :director, :string)
+   -> 0.0009s
+
+-- Creamos los modelos y validaciones
+
+class Movie < ApplicationRecord
+    validates :name, presence: true, length: {minimum: 6, maximun: 100} 
+    validates :synopsis, presence: true, length: {minimum: 10, maximun: 500} 
+    validates :director, presence: true, length: {minimum: 6, maximun: 100} 
+end
+
+-- creamos las rutas para movies
+route
+resources :movies, :series, :documentry_films, only:[:show, :index, :new, :create]
+
+--[ Route 1 ]--------------------------------------------------------------------
+Prefix            | movie
+Verb              | GET
+URI               | /movies/:id(.:format)
+Controller#Action | movies#show
+--[ Route 2 ]--------------------------------------------------------------------
+Prefix            | series
+Verb              | GET
+URI               | /series/:id(.:format)
+Controller#Action | series#show
+--[ Route 3 ]--------------------------------------------------------------------
+Prefix            | documentry_film
+Verb              | GET
+URI               | /documentry_films/:id(.:format)
+Controller#Action | documentry_films#show
+--[ Route 4 ]--------------------------------------------------------------------
+
+-- creamos los controlladores de movie, series, documentry_films, definimos metodos show
+class MoviesController < ApplicationController
+    
+    def show
+        @movie = Movie.find(params[:id])
+    end
+end
+
+--Creamos la vista en view para ver cada movie, serie
+carpeta name 
+show.html.erb
+<h1>Showing movies details</h1>
+
+<p><strong>Name: </strong><%= @movie.name%></p>
+<p><strong>Synopsis: </strong><%= @movie.synopsis%></p>
+<p><strong>Director: </strong><%= @movie.director%></p>
+
+-- creamos la vista index para todos los datos
+class MoviesController < ApplicationController
+    
+    def show
+        @movie = Movie.find(params[:id])
+    end
+
+    def index
+        @movies = Movie.all
+    end
+end
+
+vista index
+<h1>Movies listing page</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Synopsis</th>
+            <th>Director</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @movies.each do |movie|%>
+        <tr>
+            <td><%= movie.name%></td>
+            <td><%= movie.synopsis%></td>
+            <td><%= movie.director%></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+
+mostrando errores controllador config
+class MoviesController < ApplicationController
+    
+    def show
+        @movie = Movie.find(params[:id])
+    end
+
+    def index
+        @movies = Movie.all
+    end
+
+    def new
+        @movie = Movie.new
+    end
+
+    def create
+        @movie = Movie.new(params.require(:movie).permit(:name, :synopsis, :director))
+        if @movie.save
+            # flash[:notice] = "movie was created successfully."
+            redirect_to @movie
+        else
+            render :new, status: 422
+        end
+    end
+end
+
+page new.html
+<h1>Create a new Movie</h1>
+
+<% if @movie.errors.any? %>
+    <h2>The following errors prevented the movie from being saved</h2>
+    <ul>
+        <% @movie.errors.full_messages.each do |msg|%>
+            <li><%= msg %></li>
+        <% end %>
+    </ul>
+<% end %>
+
+<%= form_with scope: :movie, url: movies_path, local: true do |f|%>
+    <p>
+        <%= f.label :name %><br/>
+        <%= f.text_field :name %>
+    </p>
+
+    <p>
+        <%= f.label :synopsis %><br/>
+        <%= f.text_area :synopsis %>
+    </p>
+
+    <p>
+        <%= f.label :director %><br/>
+        <%= f.text_field :director %>
+    </p>
+
+    <p>
+        <%= f.submit %>
+    </p>
+<% end %>

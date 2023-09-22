@@ -1,0 +1,47 @@
+rails new farmers -d postgresql
+
+bundle
+
+rails db:create 
+
+rails g model farmer name age
+
+rails g scaffold animal name
+
+
+-- se configuran las clases para la relacion
+class Animal < ApplicationRecord
+    belongs_to :farmer
+end
+
+class Farmer < ApplicationRecord
+    has_many :animals
+end
+
+crear la migracion para agregar la FK
+rails g migration add-farmers_to_animals farmer:references
+class AddFarmersToAnimals < ActiveRecord::Migration[7.0]
+  def change
+    add_reference :animals, :farmer, null: false, foreign_key: true
+  end
+end
+
+rails db:migrate
+
+class Farmer < ApplicationRecord
+    has_many :animals
+
+    def to_s
+        self.name
+    end
+end
+
+agregamos en el controllador farms
+def farm_params
+  params.require(:farm).permit(:name, farmers_attriutes: [:id, :name, :age, :_destroy])
+end
+
+ def new
+  @farm = Farm.new
+  @farm.farmers.build
+end

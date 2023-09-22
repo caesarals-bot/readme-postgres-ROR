@@ -1,0 +1,4 @@
+rails new MascotTinder -d postgresql
+
+rails db:create
+
